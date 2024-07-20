@@ -11,6 +11,35 @@ app.use(Cors())
 
 Mongoose.connect("mongodb+srv://aseera:aseera@cluster0.x0tifel.mongodb.net/blog1appDb?retryWrites=true&w=majority&appName=Cluster0")
 
+//signIn
+app.post("/SignIn",async(req,res)=>{
+    let input=req.body
+    let result =UserModel.find({email:req.body.email}).then(
+        (items)=>{
+            if (items.length>0) {
+                const passwordValidator=Bcrypt.compareSync(req.body.password,items[0].password)
+                if (passwordValidator) {
+                    jwt.sign({email:req.body.email},"blog1app",{expiresIn:"Id"},
+                        (error,token)=>{
+                            if (error) {
+                                res.json({"status":"error","errorMessage":error})
+                            } else {
+                                res.json({"status":"success","token":token,"userId":items[0]._id})
+                            }
+                        }
+                    )
+                } else {
+                    res.json({"status":"Invalid Email Id"})
+                }
+            } else {
+                res.json({"status":"Invalid Email Id"})
+                
+            }
+        }
+    ).catch()
+})
+
+//signup
 app.post("/SignUp",async(req,res)=>{
     let input=req.body
     let hashedpassword =Bcrypt.hashSync(req.body.password,10)
