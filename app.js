@@ -12,6 +12,28 @@ app.use(Cors())
 
 Mongoose.connect("mongodb+srv://aseera:aseera@cluster0.x0tifel.mongodb.net/blog1appDb?retryWrites=true&w=majority&appName=Cluster0")
 
+//viewall
+app.post("/Viewall",(req,res)=>{
+    let token=req.headers.token
+    jwt.verify(token,"blog1app",(error,decoded)=>{
+        if (decoded && decoded.email) {
+            postModel.find().then(
+                (items)=>{
+                    res.json(items)
+                }
+            ).catch(
+                (error)=>{
+                    req.json({"status":"error"})
+                }
+            )
+            
+        } else {
+            res.json({"status":"Invalid Authentication"})
+        }
+    })
+})
+
+
 //create a post
 app.post("/Create",async(req,res)=>{
     let input=req.body
