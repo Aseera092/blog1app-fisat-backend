@@ -19,7 +19,8 @@ app.post("/SignIn",async(req,res)=>{
             if (items.length>0) {
                 const passwordValidator=Bcrypt.compareSync(req.body.password,items[0].password)
                 if (passwordValidator) {
-                    jwt.sign({email:req.body.email},"blog1app",{expiresIn:"Id"},
+
+                    jwt.sign({email:req.body.email},"blog1app",{expiresIn:"1d"},
                         (error,token)=>{
                             if (error) {
                                 res.json({"status":"error","errorMessage":error})
@@ -29,7 +30,7 @@ app.post("/SignIn",async(req,res)=>{
                         }
                     )
                 } else {
-                    res.json({"status":"Invalid Email Id"})
+                    res.json({"status":"Invalid Password"})
                 }
             } else {
                 res.json({"status":"Invalid Email Id"})
